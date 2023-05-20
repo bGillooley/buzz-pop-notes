@@ -1,6 +1,6 @@
 import { Inter } from "next/font/google";
 
-import { getNotesData } from "@/lib/db-queries";
+import { getOwnData } from "@/lib/db-queries";
 
 import NoteBlock from "@/app/components/note-block";
 import { getServerSession } from "next-auth";
@@ -12,7 +12,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export default async function Home() {
   const session = await getServerSession(authOptions);
-  const notesData = await getNotesData();
+  const notesData = await getOwnData();
 
   if (!session) {
     return (
@@ -30,8 +30,7 @@ export default async function Home() {
       </div>
       <Link
         className="fixed flex justify-center items-start bottom-4 right-4 p-4 text-4xl bg-blue-700 rounded-full text-white shadow-md"
-        href="/create-note"
-      >
+        href="/create-note">
         <button className="">
           <MdOutlineAdd />
         </button>

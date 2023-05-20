@@ -8,7 +8,7 @@ export async function POST(request: Request) {
   const session = await getServerSession(authOptions);
   const req = await request.json();
   console.log("Billy will now present to you...", req);
-  const { categoryId, content, postUrl } = req;
+  const { categoryId, content, postUrl, published } = req;
 
   let postTitle = "";
   let postImageUrl = "";
@@ -25,6 +25,7 @@ export async function POST(request: Request) {
       postTitle: postTitle,
       postUrl: postUrl,
       postImageUrl: postImageUrl,
+      published: published,
       author: { connect: { email: session?.user?.email } },
       categories: {
         create: [

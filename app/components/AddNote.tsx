@@ -4,12 +4,14 @@ import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { MdOutlineArrowBackIosNew } from "react-icons/md";
+import { Switch } from "@headlessui/react";
 
 export default function AddNote({ categories }) {
   const inputEl = useRef(null);
   const { data: session, status } = useSession();
   const router = useRouter();
   const [content, setContent] = useState("");
+  const [published, setPublished] = useState(false);
   const [category, setCategory] = useState("");
   const [postUrl, setPostUrl] = useState("");
 
@@ -21,7 +23,7 @@ export default function AddNote({ categories }) {
       );
       console.log(filterCategoryId);
       const categoryId = filterCategoryId.id;
-      const body = { categoryId, content, postUrl };
+      const body = { categoryId, content, postUrl, published };
       await fetch("http://localhost:3000/api/note", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -54,11 +56,26 @@ export default function AddNote({ categories }) {
           value={postUrl}
           className="w-full mb-2 rounded-md p-2 border-2 border-stone-400"
         />
+        <div className="flex my-4 py-4 align-center">
+          <span className="mr-4">Make this public: </span>
+          <Switch
+            checked={published}
+            onChange={setPublished}
+            className={`${
+              published ? "bg-blue-600" : "bg-gray-200"
+            } relative inline-flex h-6 w-11 items-center rounded-full`}>
+            <span className="sr-only">Enable notifications</span>
+            <span
+              className={`${
+                published ? "translate-x-6" : "translate-x-1"
+              } inline-block h-4 w-4 transform rounded-full bg-white transition`}
+            />
+          </Switch>
+        </div>
         <div className="mb-4">
           <select
             onChange={(e) => setCategory(e.target.value)}
-            className="border-2 rounded-md bg-slate-50 px-1 py-2"
-          >
+            className="border-2 rounded-md bg-slate-50 px-1 py-2">
             <option hidden>Place in a category:</option>
             {categories.currentCats.map((cat) => (
               <option key={cat.id} value={`${cat.name}`}>
